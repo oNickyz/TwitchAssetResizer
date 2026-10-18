@@ -2,7 +2,7 @@
 
 A lightweight Windows utility that exports PNG images into multiple sizes commonly used for Twitch channel assets.
 
-Drop a PNG onto `TwitchAssetResizer.bat`, choose an asset category, and the script generates the selected variants in an organized output folder. It is designed for creators who want a quick, repeatable export workflow without opening an image editor for every size.
+Keep `TwitchAssetResizer.bat` and `TwitchAssetResizer.ps1` together in the same folder. Drop a PNG onto the batch file, choose an asset category, and the script generates the selected variants in an organized output folder. It is designed for creators who want a quick, repeatable export workflow without opening an image editor for every size.
 
 ## Features
 
@@ -25,11 +25,11 @@ ImageMagick is optional. If the `magick` command is available in your `PATH`, th
 
 ## How to use
 
-1. Download `TwitchAssetResizer.bat` from this repository.
-2. Drag and drop a PNG image onto the `.bat` file.
-3. Choose an asset category from the menu by entering a number from `1` to `8`.
-4. Wait for the export to finish.
-5. Open the generated folder next to the original image.
+1. Download the ZIP release and extract **all files** into one folder.
+2. Keep `TwitchAssetResizer.bat` and `TwitchAssetResizer.ps1` in the same folder. Do not move or delete either file.
+3. Drag and drop a PNG image onto the `.bat` file.
+4. Choose an asset category from the menu by entering a number from `1` to `8`.
+5. Wait for the export to finish, then open the generated folder next to the original image.
 
 If you launch the script without dragging in a file, it will ask you to enter the image path. The original image is not modified.
 
