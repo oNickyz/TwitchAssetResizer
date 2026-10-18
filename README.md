@@ -1,10 +1,34 @@
 # Twitch Asset Resizer
 
-A lightweight Windows utility that exports PNG images into multiple sizes commonly used for Twitch channel assets.
+A lightweight utility that exports images into multiple sizes commonly used for Twitch channel assets. It is available as a Windows script and as a web version that runs directly in your browser.
 
 Keep `TwitchAssetResizer.bat` and `TwitchAssetResizer.ps1` together in the same folder. Drop a PNG onto the batch file, choose an asset category, and the script generates the selected variants in an organized output folder. It is designed for creators who want a quick, repeatable export workflow without opening an image editor for every size.
 
-## Features
+## Web version (no download needed)
+
+Prefer not to run a `.bat` file? Use the browser version. It does the same exports without installing or executing anything on your computer:
+
+**https://onickyz.github.io/TwitchAssetResizer/**
+
+- **100% local:** everything runs in your browser. Your image is never uploaded to any server.
+- **Easy to use:** drag and drop (or click to choose) a PNG, JPG or WebP image, tick the asset categories you want, and download the files one by one or all at once in a single `.zip`.
+- **Same presets:** the same sizes, folder names and file-size warnings as the Windows version.
+- **Works anywhere:** Windows, macOS, Linux and mobile browsers.
+- **Open code:** the whole site is a single `index.html` file that you can read and inspect.
+
+The web version resizes with the browser's canvas (step-down resampling) instead of ImageMagick or GDI+, so results can differ slightly from the Windows version.
+
+### Hosting your own copy
+
+Because the site is a single static file, you can host it anywhere. For GitHub Pages:
+
+1. Keep `index.html` in the root of the repository.
+2. Go to **Settings → Pages**, choose **Deploy from a branch**, select your main branch and the `/ (root)` folder, and save.
+3. Your site will be available at `https://YOUR-USERNAME.github.io/YOUR-REPOSITORY/`.
+
+Netlify, Cloudflare Pages and any other static host also work.
+
+## Features (Windows version)
 
 - **Drag and drop:** Drop a `.png` image onto the batch file.
 - **Eight menu options:** Badges, emotes and Cheermotes, Channel Points icons, profile picture, profile banner, offline/player banner preset, information panels, or a full export package.
@@ -15,7 +39,7 @@ Keep `TwitchAssetResizer.bat` and `TwitchAssetResizer.ps1` together in the same 
 - **Organized output:** Creates a dedicated export folder beside the source image. If that folder already exists, a numbered folder is created instead.
 - **Basic file-size warnings:** Alerts for certain known Twitch asset limits; final files should still be checked before upload.
 
-## Requirements
+## Requirements (Windows version)
 
 - Windows 10 or Windows 11
 - A source image in PNG format
@@ -23,7 +47,7 @@ Keep `TwitchAssetResizer.bat` and `TwitchAssetResizer.ps1` together in the same 
 
 ImageMagick is optional. If the `magick` command is available in your `PATH`, the script uses ImageMagick and Lanczos resampling automatically. Otherwise, it falls back to Windows GDI+.
 
-## How to use
+## How to use (Windows version)
 
 1. Download the ZIP release and extract **all files** into one folder.
 2. Keep `TwitchAssetResizer.bat` and `TwitchAssetResizer.ps1` in the same folder. Do not move or delete either file.
@@ -84,8 +108,8 @@ The script displays basic file-size warnings for subscription/Bits badges, infor
 
 ## Limitations
 
-- Windows batch script; not designed for macOS or Linux.
-- Accepts PNG input only.
+- The `.bat`/`.ps1` version is Windows only. On macOS or Linux, use the web version.
+- The Windows version accepts PNG input only. The web version also accepts JPG and WebP.
 - Does not upload images to Twitch.
 - Does not create animated emotes or GIFs.
 - Twitch may change its requirements, so export presets may need maintenance.
@@ -94,7 +118,7 @@ The script displays basic file-size warnings for subscription/Bits badges, infor
 
 This project is licensed under the **MIT License**, with copyright attributed to **MEGAzLand™**. See [`LICENSE`](LICENSE) for the full license text.
 
-The MIT License applies to this project's code. It does not grant permission to use Twitch trademarks or MEGAzLand™ branding, logos, or other brand assets as if officially affiliated or endorsed.
+The MIT License applies to this project's code, including the web version. It does not grant permission to use Twitch trademarks or MEGAzLand™ branding, logos, or other brand assets as if officially affiliated or endorsed.
 
 ## Disclaimer
 
