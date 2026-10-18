@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Twitch Asset Resizer</title>
+<style>
+:root{--bg:#1D1B22;--card:#2a2632;--gold:#F0B944;--vio:#4E2BF0;--txt:#f5f2fa;--mut:#b0a9bf;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{min-height:100%;color-scheme:dark;background:linear-gradient(rgba(240,185,68,.05) 1px,transparent 1px) 0 0/32px 32px,linear-gradient(90deg,rgba(240,185,68,.05) 1px,transparent 1px) 0 0/32px 32px,#1D1B22;background-attachment:fixed}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;color:var(--txt);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{width:100%;max-width:880px;margin:0 auto;padding:40px 16px 40px;flex:1}
+h1{display:inline-block;margin:0;font-size:clamp(2rem,7vw,3.4rem);line-height:1;font-weight:900;text-transform:uppercase;letter-spacing:-1px;background:var(--gold);color:#1D1B22;padding:10px 16px;border:3px solid #fff;box-shadow:8px 8px 0 var(--vio);transform:rotate(-1.2deg)}
+h1 span{color:var(--vio)}
+h2{display:inline-block;font:700 .85rem var(--mono);text-transform:uppercase;letter-spacing:2px;margin:34px 0 12px;padding:4px 10px;background:var(--vio);color:#fff}
+.sub{color:var(--mut);margin:26px 0 28px;max-width:60ch}
+#drop{border:3px dashed var(--gold);padding:48px 16px;text-align:center;cursor:pointer;background:repeating-linear-gradient(-45deg,rgba(78,43,240,.18) 0 14px,transparent 14px 28px),var(--card);box-shadow:6px 6px 0 var(--vio);transition:.12s}
+#drop.over,#drop:hover{transform:translate(-2px,-2px);box-shadow:9px 9px 0 var(--gold);border-color:#fff}
+#drop b{font-size:1.4rem;text-transform:uppercase;color:var(--gold)}
+#drop small{display:block;color:var(--mut);margin-top:8px;font-family:var(--mono)}
+.info{display:flex;gap:14px;align-items:center;background:var(--card);border:3px solid #fff;box-shadow:5px 5px 0 var(--gold);padding:12px}
+.chk{background:repeating-conic-gradient(#3b3844 0 25%,#2b2832 0 50%) 0 0/14px 14px;border:2px solid var(--mut)}
+.info img{width:72px;height:72px;object-fit:contain;display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+label.p{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:3px solid #fff;padding:12px;cursor:pointer;box-shadow:4px 4px 0 var(--vio);font-weight:700;transition:.1s}
+label.p:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--vio)}
+label.p:has(input:checked){background:var(--gold);color:#1D1B22;box-shadow:4px 4px 0 var(--vio)}
+label.p input{accent-color:#1D1B22;margin-top:5px;width:18px;height:18px}
+label.p small{display:block;font:400 .8rem var(--mono);color:var(--mut)}
+label.p:has(input:checked) small{color:#3a3320}
+.row{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px}
+button,a.btn{font:800 .9rem var(--mono);text-transform:uppercase;letter-spacing:1px;border:3px solid #fff;padding:11px 20px;cursor:pointer;text-decoration:none;color:var(--txt);background:var(--card);box-shadow:4px 4px 0 #fff;transition:.08s}
+button:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 #fff}
+button:active{transform:translate(4px,4px);box-shadow:0 0 0 #fff}
+.primary{background:var(--vio);box-shadow:4px 4px 0 var(--gold)}
+.primary:hover{box-shadow:5px 5px 0 var(--gold)}
+.gold{background:var(--gold);color:#1D1B22;box-shadow:4px 4px 0 var(--vio)}
+.gold:hover{box-shadow:5px 5px 0 var(--vio)}
+button:disabled{opacity:.5;cursor:wait}
+.res{display:flex;gap:12px;align-items:center;padding:10px;margin-top:12px;background:var(--card);border:2px solid var(--mut)}
+.res .chk{width:60px;height:60px;flex:none;display:flex;align-items:center;justify-content:center}
+.res img{max-width:56px;max-height:56px}
+.res div{flex:1;min-width:0;word-break:break-all;font-size:.9rem}
+.res small{color:var(--mut);font-family:var(--mono)}
+.warn{color:var(--gold);font-weight:700}
+.res a{background:var(--gold);color:#1D1B22;font:800 .8rem var(--mono);text-transform:uppercase;padding:8px 12px;text-decoration:none;border:2px solid #fff}
+.res a:hover{background:#fff}
+.note{color:var(--mut);font-size:.8rem;font-family:var(--mono);margin-top:36px;border-top:3px solid var(--vio);padding-top:14px}
+footer{text-align:center;padding:18px 16px;background:var(--vio);color:#fff;font:800 .85rem var(--mono);text-transform:uppercase;letter-spacing:2px;border-top:3px solid var(--gold)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main>
+<h1>Twitch <span>Asset</span> Resizer</h1>
+<p class="sub">Redimensione sua arte para distintivos, emotes, banners e mais. Tudo roda no seu navegador: a imagem não é enviada para nenhum servidor.</p>
+
+<div id="drop"><b>Clique ou arraste sua imagem aqui</b><small>PNG recomendado (também aceita JPG e WebP)</small></div>
+<input type="file" id="file" accept="image/png,image/jpeg,image/webp" hidden>
+
+<section id="step2" hidden>
+  <h2>Imagem original</h2>
+  <div class="info"><div class="chk"><img id="prev" alt=""></div><div id="meta"></div></div>
+  <h2>Escolha os assets</h2>
+  <div class="grid" id="presets"></div>
+  <div class="row">
+    <button id="all">Selecionar tudo (pacote completo)</button>
+    <button id="none">Limpar</button>
+    <button id="go" class="primary">Gerar</button>
+  </div>
+</section>
+
+<section id="out" hidden>
+  <h2>Arquivos gerados</h2>
+  <div class="row" style="margin:0 0 8px"><button id="zip" class="gold">Baixar tudo (.zip)</button></div>
+  <div id="list"></div>
+</section>
+
+<p class="note">A proporção da arte é preservada e, quando necessário, ela é centralizada em uma tela transparente. Redimensionar não cria detalhes que não existiam na imagem original. Confira os requisitos atuais no site da Twitch antes de enviar. Ferramenta independente, sem afiliação com a Twitch Interactive, Inc.</p>
+</main>
+<footer>© Um Projeto MEGAzLand™</footer>
+
+<script>
+const P=[
+ {id:'badges',name:'Distintivos (inscrição, Bits)',desc:'18 · 36 · 72 px',dir:'Distintivos',s:[[18,18],[36,36],[72,72]],max:25600,w:'Distintivos de inscrição exigem PNG de no máximo 25 KB.'},
+ {id:'emotes',name:'Emotes e Cheermotes',desc:'28 · 56 · 112 px',dir:'Emotes_e_Cheermotes',s:[[28,28],[56,56],[112,112]]},
+ {id:'points',name:'Pontos do canal / recompensas',desc:'28 · 56 · 112 px',dir:'Pontos_do_Canal',s:[[28,28],[56,56],[112,112]]},
+ {id:'avatar',name:'Foto de perfil',desc:'256 × 256 px',dir:'Foto_de_Perfil',s:[[256,256]]},
+ {id:'banner',name:'Banner do perfil',desc:'1200 × 480 px',dir:'Banner_do_Perfil',s:[[1200,480]],max:10485760,w:'Confira o limite de 10 MB para banners.'},
+ {id:'offline',name:'Banner do player offline',desc:'1920 × 1080 px',dir:'Banner_do_Player_Offline',s:[[1920,1080]],max:10485760,w:'Confira o limite de 10 MB para banners.'},
+ {id:'panel',name:'Painel de informações',desc:'máx. 320 × 600 px (sem ampliar)',dir:'Paineis_de_Informacoes',s:[[320,600]],panel:true,max:1048576,w:'A Twitch exige que o painel fique abaixo de 1 MB.'}
+];
+const $=id=>document.getElementById(id);
+let img=null,base='imagem',res=[];
+
+$('presets').innerHTML=P.map(p=>`<label class="p"><input type="checkbox" value="${p.id}"><span>${p.name}<small>${p.desc}</small></span></label>`).join('');
+const boxes=()=>[...document.querySelectorAll('#presets input')];
+$('all').onclick=()=>boxes().forEach(b=>b.checked=true);
+$('none').onclick=()=>boxes().forEach(b=>b.checked=false);
+
+const drop=$('drop'),file=$('file');
+drop.onclick=()=>file.click();
+file.onchange=()=>file.files[0]&&load(file.files[0]);
+['dragover','dragenter'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',ev=>{const f=ev.dataTransfer.files[0];f&&load(f)});
+
+function load(f){
+  if(!/^image\/(png|jpeg|webp)$/.test(f.type)){alert('Use uma imagem PNG, JPG ou WebP.');return}
+  const url=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{
+    img=im;base=f.name.replace(/\.[^.]+$/,'').replace(/[^\w\-. ]+/g,'_')||'imagem';
+    $('prev').src=url;
+    $('meta').innerHTML=`<b>${f.name}</b><br><small style="color:var(--mut)">${im.naturalWidth} × ${im.naturalHeight} px · ${(f.size/1024).toFixed(1)} KB</small>`;
+    $('step2').hidden=false;$('out').hidden=true;
+  };
+  im.onerror=()=>alert('Não consegui abrir essa imagem.');
+  im.src=url;
+}
+
+const mk=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c};
+function draw(c,src,x,y,w,h){const g=c.getContext('2d');g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';g.drawImage(src,x,y,w,h)}
+
+// Reduz em etapas de 50% antes do passo final, o que dá um resultado bem mais nítido em tamanhos pequenos.
+function resize(im,w,h,exact,noUp){
+  const iw=im.naturalWidth,ih=im.naturalHeight;
+  let sc=Math.min(w/iw,h/ih);if(noUp)sc=Math.min(1,sc);
+  const dw=Math.max(1,Math.round(iw*sc)),dh=Math.max(1,Math.round(ih*sc));
+  let src=im,sw=iw,sh=ih;
+  while(sw/2>=dw&&sh/2>=dh){
+    const c=mk(Math.ceil(sw/2),Math.ceil(sh/2));draw(c,src,0,0,c.width,c.height);
+    src=c;sw=c.width;sh=c.height;
+  }
+  const W=exact?w:dw,H=exact?h:dh,out=mk(W,H);
+  draw(out,src,Math.floor((W-dw)/2),Math.floor((H-dh)/2),dw,dh);
+  return out;
+}
+const toBlob=c=>new Promise(r=>c.toBlob(r,'image/png'));
+
+$('go').onclick=async()=>{
+  const sel=P.filter(p=>boxes().find(b=>b.value===p.id).checked);
+  if(!sel.length){alert('Marque pelo menos um tipo de asset.');return}
+  const btn=$('go');btn.disabled=true;btn.textContent='Gerando...';
+  res.forEach(r=>URL.revokeObjectURL(r.url));res=[];
+  await new Promise(r=>setTimeout(r));
+  for(const p of sel)for(const [w,h] of p.s){
+    const c=resize(img,w,h,!p.panel,!!p.panel),blob=await toBlob(c);
+    res.push({p,blob,w:c.width,h:c.height,url:URL.createObjectURL(blob),name:`${base}_${p.panel?'Painel_':''}${c.width}x${c.height}.png`});
+  }
+  $('list').innerHTML=res.map((r,i)=>{
+    const kb=(r.blob.size/1024).toFixed(1),bad=r.p.max&&r.blob.size>r.p.max;
+    return `<div class="res"><div class="chk"><img src="${r.url}" alt=""></div><div><b>${r.p.dir}/${r.name}</b><br><small>${r.w} × ${r.h} px · ${kb} KB</small>${bad?`<br><span class="warn">⚠ ${r.p.w}</span>`:''}</div><a href="${r.url}" download="${r.name}">Baixar</a></div>`;
+  }).join('');
+  $('out').hidden=false;$('out').scrollIntoView({behavior:'smooth'});
+  btn.disabled=false;btn.textContent='Gerar';
+};
+
+$('zip').onclick=async()=>{
+  const root=`${base}_Twitch_Exports/`,files=[];
+  for(const r of res)files.push({name:`${root}${r.p.dir}/${r.name}`,data:new Uint8Array(await r.blob.arrayBuffer())});
+  const a=document.createElement('a');a.href=URL.createObjectURL(makeZip(files));a.download=`${base}_Twitch_Exports.zip`;a.click();
+};
+
+// ZIP mínimo (sem compressão, PNG já é comprimido), sem depender de bibliotecas externas.
+const T=new Uint32Array(256).map((_,n)=>{let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;return c>>>0});
+const crc=b=>{let c=-1;for(let i=0;i<b.length;i++)c=T[(c^b[i])&255]^(c>>>8);return(c^-1)>>>0};
+function makeZip(files){
+  const enc=new TextEncoder(),parts=[],cd=[];let off=0;
+  const d=new Date(),dt=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate(),tm=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1);
+  for(const f of files){
+    const n=enc.encode(f.name),c=crc(f.data),s=f.data.length;
+    const h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(10,tm,true);h.setUint16(12,dt,true);
+    h.setUint32(14,c,true);h.setUint32(18,s,true);h.setUint32(22,s,true);h.setUint16(26,n.length,true);
+    parts.push(h.buffer,n,f.data);
+    const e=new DataView(new ArrayBuffer(46));
+    e.setUint32(0,0x02014b50,true);e.setUint16(4,20,true);e.setUint16(6,20,true);e.setUint16(8,0x0800,true);e.setUint16(12,tm,true);e.setUint16(14,dt,true);
+    e.setUint32(16,c,true);e.setUint32(20,s,true);e.setUint32(24,s,true);e.setUint16(28,n.length,true);e.setUint32(42,off,true);
+    cd.push(e.buffer,n);
+    off+=30+n.length+s;
+  }
+  const cs=cd.reduce((a,b)=>a+b.byteLength,0),end=new DataView(new ArrayBuffer(22));
+  end.setUint32(0,0x06054b50,true);end.setUint16(8,files.length,true);end.setUint16(10,files.length,true);end.setUint32(12,cs,true);end.setUint32(16,off,true);
+  return new Blob([...parts,...cd,end.buffer],{type:'application/zip'});
+}
+</script>
+</body>
+</html>
