@@ -8,7 +8,7 @@ Keep `TwitchAssetResizer.bat` and `TwitchAssetResizer.ps1` together in the same 
 
 Prefer not to run a `.bat` file? Use the browser version. It does the same exports without installing or executing anything on your computer:
 
-**https://onickyz.github.io/TwitchAssetResizer/**
+**https://twitchares.pages.dev/**
 
 - **100% local:** everything runs in your browser. Your image is never uploaded to any server.
 - **Easy to use:** drag and drop (or click to choose) a PNG, JPG or WebP image, tick the asset categories you want, and download the files one by one or all at once in a single `.zip`.
